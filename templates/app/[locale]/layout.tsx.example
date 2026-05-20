@@ -1,0 +1,173 @@
+/**
+ * Root layout — SEO + GEO foundation example.
+ *
+ * Replace placeholders marked with ⬇️ to suit your business.
+ * See ../../docs/GEO_GUIDE.md for the strategy.
+ */
+import type { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+
+// ⬇️ Replace with your i18n config
+const locales = ['ko', 'en'] as const;
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.example.com';
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// generateMetadata — title/description/OG/canonical/hreflang/verification
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isKo = locale === 'ko';
+
+  // ⬇️ Replace with your tagline
+  const title = isKo
+    ? 'YourCompany | 한 줄 카테고리/포지셔닝'
+    : 'YourCompany | One-line Category / Positioning';
+  const description = isKo
+    ? '회사가 무엇을 만드는지, 누구를 위한 것인지 1-2문장으로.'
+    : 'What you build, for whom, in 1-2 sentences.';
+
+  return {
+    metadataBase: new URL(BASE_URL),
+    title: {
+      default: title,
+      template: `%s | YourCompany`,
+    },
+    description,
+    openGraph: {
+      type: 'website',
+      siteName: 'YourCompany',
+      title,
+      description,
+      locale: isKo ? 'ko_KR' : 'en_US',
+      url: isKo ? BASE_URL : `${BASE_URL}/en`,
+      images: [
+        {
+          url: '/images/og-default.png', // ⬇️ Add a 1200×630 OG image to /public/images/
+          width: 1200,
+          height: 630,
+          alt: 'YourCompany',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/images/og-default.png'],
+    },
+    alternates: {
+      canonical: isKo ? BASE_URL : `${BASE_URL}/en`,
+      languages: {
+        'ko-KR': BASE_URL,
+        en: `${BASE_URL}/en`,
+        'x-default': BASE_URL,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    verification: {
+      // ⬇️ Add tokens here after registering Search Console / Naver Search Advisor
+      // google: 'YOUR_GOOGLE_TOKEN',
+      // other: {
+      //   'naver-site-verification': 'YOUR_NAVER_TOKEN',
+      // },
+    },
+  };
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Layout — injects Organization + WebSite JSON-LD into <head>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  if (!locales.includes(locale as (typeof locales)[number])) {
+    notFound();
+  }
+
+  const messages = await getMessages({ locale });
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // JSON-LD: Organization + WebSite (renders on every page)
+  // ⬇️ Replace placeholders below
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${BASE_URL}/#organization`,
+        name: 'YourCompany', // ⬇️
+        url: BASE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${BASE_URL}/images/your-logo.png`, // ⬇️
+        },
+        sameAs: [
+          // ⬇️ Social profiles
+          // 'https://www.linkedin.com/company/yourcompany',
+          // 'https://github.com/yourcompany',
+        ],
+        description:
+          locale === 'ko'
+            ? '회사 한 줄 설명 (Organization 용 — 검색결과·AI 답변에 인용됨)'
+            : 'One-line org description (used by search & AI answer engines)',
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'sales',
+          email: 'hello@example.com', // ⬇️
+          telephone: '+82-10-0000-0000', // ⬇️ Optional
+          areaServed: ['KR', 'GLOBAL'],
+          availableLanguage: ['ko', 'en'],
+        },
+        // Remove this block if service-area business (no physical office)
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: '도로명 123', // ⬇️
+          addressLocality: '구', // ⬇️ District (Songpa-gu, etc.)
+          addressRegion: '시도', // ⬇️ Region (Seoul, etc.)
+          addressCountry: 'KR',
+        },
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${BASE_URL}/#website`,
+        url: BASE_URL,
+        name: 'YourCompany',
+        publisher: { '@id': `${BASE_URL}/#organization` },
+        inLanguage: [locale === 'ko' ? 'ko-KR' : 'en'],
+      },
+    ],
+  };
+
+  return (
+    <html lang={locale}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  );
+}
