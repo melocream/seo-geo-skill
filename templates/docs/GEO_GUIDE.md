@@ -1,183 +1,289 @@
-# GEO 가이드 — Generative Engine Optimization for Hypemarc
+# GEO Guide — Generative Engine Optimization for Next.js sites
 
-> AI 답변 엔진(ChatGPT·Perplexity·Google AI Overview·Claude) 이 사이트 콘텐츠를 *인용·요약·답변에 활용*하도록 구조화하는 모범 사례.
+> Strategy + practical patterns for being cited by AI answer engines (Google AI Overview, Perplexity, ChatGPT Search, Claude Web Search). Aligned with **Google's official AI-features guidance** ([source](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)).
 
 ---
 
-## 1. GEO 가 SEO 와 다른 점
+## 1. GEO vs SEO
 
-| | 전통 SEO | GEO |
+| | Traditional SEO | GEO |
 |---|---|---|
-| **목표** | 검색 결과 페이지 1위 → 클릭 유도 | AI 답변에 *인용 출처* 로 노출 → 노출·신뢰 |
-| **신호** | 키워드, 백링크, CTR | 명료성, 구조화, 인용 가능성, E-E-A-T |
-| **출처 표시** | meta description, title | *답변 가능한 명시적 문장*, 통계, 권위자 인용 |
-| **클릭률** | 클릭 = KPI | 클릭 0 일 수도 (AI가 답변 종결) |
+| **Goal** | Rank #1 on the SERP → drive a click | Be cited as a source in the AI answer |
+| **Signals** | Keywords, backlinks, CTR | Clarity, structure, citation-worthiness, E-E-A-T |
+| **Outcome** | Click = success | Click optional — being *named* in the AI answer is the success |
 
-→ GEO 시대엔 *순위* 보다 *AI 답변에 우리 회사 이름이 박히는 빈도* 가 더 중요.
+In the GEO era, *getting cited* in AI answers matters as much as ranking.
 
 ---
 
-## 2. 핵심 원칙 5가지 (사이트에 적용 완료)
+## 2. Google's Official Position (read this first)
 
-### 원칙 1 — Answer-First 구조
+Google's AI Optimization Guide is unambiguous on these points:
 
-각 페이지·블로그 글의 **첫 문단에 핵심 답변** 를 명시. AI 모델은 첫 256-512 토큰을 가장 중요하게 봅니다.
+> **"There's no special schema.org markup you need to add. Structured data isn't required for generative AI search."**
 
-**예시 (블로그 글 `mcp-protocol-explained`):**
-```markdown
-## 에이전트가 "도구를 가진다" 는 의미
+> **"Don't create LLMs.txt files and other 'special' markup."**
 
-2023년까지 LLM은 본질적으로 텍스트 입출력 함수였습니다.
-...
-> 비유: USB-C 가 전자기기 케이블의 표준이 된 것처럼,
->       MCP 가 AI 에이전트의 도구 표준이 되고 있다.
+> **"Don't chunk content into tiny pieces."**
+
+> **"Don't rewrite content just for AI systems."**
+
+> **"Foundational SEO best practices continue to be relevant because AI features rely on core Search ranking systems."**
+
+**Translation**: The same fundamentals that work for classic Search — helpful content, crawlability, semantic HTML, structured data for rich results — are what work for AI answers. There is **no separate "AI SEO" channel.**
+
+This guide therefore covers:
+1. **Content quality** (Google's #1 emphasis)
+2. **Technical fundamentals** (crawl, render, Search Console)
+3. **Optional but useful structured data** (helps rich results AND AI extraction)
+4. **What NOT to do** (explicit Google prohibitions)
+5. **The future** (agentic experiences, UCP)
+
+---
+
+## 3. Five Principles
+
+### Principle 1 — Helpful, original content above all else
+
+Google's foundational requirement. AI answer engines weight *unique, first-hand, expert content* above any structural trick.
+
+**Do:**
+- Unique point of view from your team's actual experience
+- Specific, citable statistics with sources
+- Non-commodity content (avoid "7 Tips for X" filler)
+
+**Don't:**
+- Summarize what other sites already say
+- Create "scaled content" (one post per keyword variation) — Google's **scaled content abuse policy** treats this as spam
+
+### Principle 2 — Answer-First structure
+
+The first 256-512 tokens of any page or blog post are weighted most heavily by retrieval models.
+
+**Pattern:**
+```
+H1 / page title
+↓
+First paragraph: ONE-LINE answer to the page's core question
+↓
+H2: supporting depth
+↓
+H3: details
 ```
 
-→ 한 줄로 *MCP가 무엇인지* 정의. AI가 이 한 줄을 그대로 답변에 활용 가능.
+Don't bury the answer under three paragraphs of intro.
 
-### 원칙 2 — 구조화 데이터 (Schema.org JSON-LD)
+### Principle 3 — Structured Data (optional but recommended)
 
-페이지마다 알맞은 schema 적용 (이미 사이트에 구현됨):
+Per Google: *"structured data isn't required"* for AI features — but it **does** help:
+- Rich results in classic Search
+- Faster, more accurate extraction by AI answer engines (Perplexity, ChatGPT cite structured pages more reliably)
 
-| 페이지 | Schema |
+This skill ships builders for the schemas that matter most:
+
+| Page type | Schema |
 |---|---|
-| `/` (홈) | `Organization` + `WebSite` + `ContactPoint` + `PostalAddress` |
-| `/marblo` | `SoftwareApplication` + `Offer` |
-| `/consulting` | `Service` + `OfferCatalog` + `FAQPage` |
-| `/blog/[slug]` | `Article` + `Author` + `Publisher` |
-| `/contact` | (옵션) `LocalBusiness` |
+| Root layout | `Organization` + `WebSite` + `ContactPoint` + `PostalAddress` |
+| Service/consulting/product | `Service` + `OfferCatalog` |
+| List pages (cases, portfolio) | `ItemList` |
+| Blog post | `Article` + `Author` + `Publisher` |
+| SaaS product | `SoftwareApplication` + `Offer` |
+| Any commercial page | `FAQPage` |
 
-→ AI 답변 엔진이 *"무엇을 파는 회사인지", "주소·연락처·가격·FAQ"* 를 즉시 추출.
+Use them where they fit the page's *actual* content. Don't invent FAQs to add a FAQPage schema.
 
-### 원칙 3 — 인용 가능한 통계·수치
-
-추상적 형용사("매우 빠른") 대신 **구체적 숫자 + 측정 방법** 를 명시.
-
-**좋은 예시 (사례 페이지 `saas1`):**
-> 주간 커밋 수 100+
-> 기능 PR 사이클 기존 대비 5배
-
-**나쁜 예시:**
-> 개발 속도가 훨씬 빨라졌습니다.
-
-→ 숫자가 있어야 AI 답변에 인용됨. 출처(우리 회사)도 함께 노출.
-
-### 원칙 4 — E-E-A-T 신호
+### Principle 4 — E-E-A-T signals
 
 **E**xperience · **E**xpertise · **A**uthoritativeness · **T**rust
 
-각 블로그 글에 적용 (이미 frontmatter 에 있음):
+On every blog post:
 ```yaml
-author: "하이프마크 AI팀"
-date: "2026-05-15"
-category: "AI Agents"
+---
+author: "Your Team"
+date: "2026-05-20"
+category: "..."
+---
 ```
 
-추가로 권장:
-- 글마다 "실무 경험 기반" 명시 (예: *"우리 팀이 직접 운영하며 검증한"*)
-- 외부 권위 있는 출처 인용 (Anthropic·OpenAI 공식 문서 링크)
-- 저자 프로필 페이지 (향후 작업)
+Plus:
+- Cite reputable external sources (vendor docs, academic papers)
+- Show author bio / org connection
+- Keep dates accurate (update `dateModified` when content changes)
 
-### 원칙 5 — FAQ 패턴
+### Principle 5 — FAQs on commercial pages
 
-**모든 핵심 페이지에 FAQ 섹션 + FAQPage 스키마** 추가 권장.
+If your page sells something (a service, product, plan), a short FAQ section makes AI extraction far easier:
 
-이미 적용:
-- `/consulting` — 6개 FAQ + FAQPage 스키마
+```tsx
+import { generateFAQSchema } from '@/lib/faq-schema';
 
-향후 추가 권장:
-- `/marblo` — "Marblo는 Cursor·Copilot과 어떻게 다른가?" 등 5-6개
-- `/agents` — "에이전트 구축 기간/비용/MCP 연동 등" 5-6개
+const faqSchema = generateFAQSchema([
+  { question: 'How much does it cost?', answer: '...' },
+  { question: 'How long does setup take?', answer: '...' },
+]);
+```
 
-각 FAQ 는 *완전한 한 문장 질문 + 2-4문장 답변* 형식이 AI 답변에 가장 잘 추출됨.
+These appear directly in Google AI Overview, Perplexity, and ChatGPT answers.
 
 ---
 
-## 3. AI 답변 엔진별 최적화 포인트
+## 4. ❌ What NOT to do (Google's explicit prohibitions)
 
-### Google AI Overview (Search Generative Experience)
+| Don't do this | Why |
+|---|---|
+| **Create `llms.txt` or other "AI-only" files** | Google: *"no special files for AI."* They aren't read by AI systems. |
+| **Chunk content into tiny pieces** | Google: *"no requirement to break content apart for AI comprehension."* Write naturally. |
+| **Rewrite the same content with AI-targeted phrasing** | Google: *"don't rewrite content just for AI systems."* Single page, written for humans, works for both. |
+| **Manufacture "mentions" across the web** | Inauthentic backlinks/mentions get caught by spam detection. Earn real mentions through real value. |
+| **Hyper-target long-tail variations** | AI systems handle synonyms and intent. One good page covering a topic ≫ ten near-duplicates. |
+| **Scaled content abuse** (one post per query variation) | Google policy violation. AI answer engines deprioritize spam-flagged domains. |
 
-- **schema.org JSON-LD 필수**
-- 페이지 *첫 화면(above-the-fold)* 에 핵심 답변
-- *문장 첫 30단어* 이내에 키워드+답변
-- 사이트맵·robots.txt 정상 (✅ 완료)
-- HTTPS·Core Web Vitals 양호
+---
+
+## 5. Technical Fundamentals (also Google's requirements)
+
+### Crawlability
+- All pages you want indexed must be reachable by Googlebot, Bingbot, ClaudeBot, GPTBot, etc.
+- robots.txt should `Allow: /` for everything except admin/API
+- Sitemap.xml submitted to Search Console
+
+(This skill ships `app/sitemap.ts` + `app/robots.ts` with sensible defaults.)
+
+### JavaScript SEO
+If your Next.js project uses heavy client-side rendering, ensure:
+- Critical content renders server-side (Next.js App Router does this by default)
+- Use `<Suspense>` boundaries for content you want crawled
+- Test with: https://search.google.com/test/mobile-friendly
+
+### Semantic HTML
+Google: *"Use semantic HTML when possible. It improves accessibility AND parsing."*
+
+Prefer:
+```tsx
+<article>
+  <header><h1>Title</h1></header>
+  <section>...</section>
+  <aside>...</aside>
+</article>
+```
+
+Over generic `<div>` soup. AI parsing improves measurably.
+
+### Page experience
+- Cross-device responsive (Next.js + Tailwind handles this)
+- Reduced latency (Vercel edge handles this)
+- Clear visual separation of main content from chrome (navigation, footer)
+
+### Search Console verification
+**Required step.** Verify your site at https://search.google.com/search-console so you can:
+- Submit sitemap.xml
+- Monitor crawl errors
+- See queries that lead to your pages
+- (Eventually) see AI Overview impressions when Google exposes that data
+
+---
+
+## 6. AI Answer Engine — engine-by-engine tips
+
+### Google AI Overview (SGE)
+- Schema.org JSON-LD strongly helps (despite Google saying it isn't *required*, structured pages get cited more reliably)
+- First 30 words of the page should contain the answer + key entity
+- HTTPS + Core Web Vitals green
+- Search Console submission is the de facto entry point
 
 ### Perplexity / ChatGPT Search
+- Citable formats: short paragraphs, definitions, lists, tables
+- Extractable facts: stats with dates and sources
+- Recent `date` in frontmatter helps freshness ranking
 
-- **외부 인용 가능한 형식** — 짧은 문단, 명확한 정의
-- *통계·날짜·이름* 같은 "추출 가능한 정보 조각"
-- 출처가 "최근 게시된 글" 인지 (date frontmatter)
-
-### Anthropic Claude (web search via tools)
-
-- *Markdown 친화적 구조* — H2/H3 명확, 리스트·표
-- 코드 블록 정확성 (실제 동작하는 예시)
-- 모호한 마케팅 카피보다 *기술적 정확성*
+### Anthropic Claude (Web Search via tool use)
+- Markdown-friendly structure (H2/H3, lists, tables)
+- Correct code blocks (actually-runnable examples)
+- Plain language over marketing jargon
 
 ---
 
-## 4. 사이트 현황 (2026-05-20 기준)
+## 7. Local Businesses + Ecommerce (Google-specific channels)
 
-### ✅ 적용된 GEO 요소
+Per Google's official guidance:
 
-- Organization + ContactPoint + PostalAddress 스키마 (모든 페이지 공통)
-- WebSite 스키마 (검색 액션 포함 시 추가 효과)
-- Marblo SoftwareApplication + Offer
-- Consulting Service + OfferCatalog + FAQPage
-- Blog Article + Author + datePublished
-- Sitemap.xml + robots.txt
-- hreflang (ko-KR, en, x-default)
-- 신규 블로그 5편 — Answer-first 구조 + 통계·수치 + Marblo 자연스러운 인용
-
-### 🟡 추가 권장 (향후 작업)
-
-- `/agents` 페이지 — Service + ItemList 스키마
-- `/agents/[type]` 6개 페이지 — 각각 Service 스키마
-- `/cases` — ItemList + Case 각각 schema
-- 각 페이지에 5-6개 FAQ + FAQPage 스키마
-- 저자 프로필 페이지 + Person 스키마
-- HowTo 스키마 (블로그 단계별 가이드 글에)
-- 권위 외부 출처 (Anthropic·OpenAI 공식 문서) 인용 강화
-- Google Search Console 등록 + sitemap 제출
-- Bing Webmaster Tools 등록 (AI Overview는 Bing 인덱스 기반)
-
----
-
-## 5. 측정 — 어떻게 GEO 성공을 측정하나?
-
-전통 SEO 지표(순위·CTR) 외에:
-
-| 지표 | 측정 방법 |
+| Channel | Use when |
 |---|---|
-| AI 답변 인용 노출 | ChatGPT/Perplexity 에서 "Marblo", "하이프마크" 검색 후 답변에 우리 사이트 인용되는지 모니터링 |
-| Google AI Overview 노출 | "AI 에이전트 도입", "이종 모델 오케스트레이션" 등 키워드에 AI Overview 등장 시 우리 글 출처로 나오는지 |
-| 브랜드 직접 검색 증가 | GA4 → 획득 → 트래픽 소스 *Direct* + *Organic Brand* 증가율 |
-| 인용 트래픽 | Perplexity/ChatGPT referer 트래픽 (있다면) |
+| **Google Business Profile** | You have a physical location, service area, or any locality-relevant business. Free, high impact. |
+| **Merchant Center feeds** | You sell physical products. Even if not e-com, free listings show in Shopping. |
+| **Business Agent** (preview) | Conversational interface for customers to chat with your brand on Google. Worth tracking. |
 
-월 1회 위 지표 점검 권장.
-
----
-
-## 6. 새 콘텐츠 작성 체크리스트 (GEO 친화)
-
-블로그 글이나 페이지 작성 시:
-
-- [ ] 첫 문단에 *핵심 답변 한 줄* 명시
-- [ ] H2/H3 헤더는 *질문 형식* 또는 *명확한 토픽*
-- [ ] 통계·수치 포함 (출처 명시)
-- [ ] FAQ 섹션 3-6개 (질문 + 짧은 답변)
-- [ ] 권위 외부 출처 1-2개 인용
-- [ ] Markdown 표 또는 리스트 활용
-- [ ] frontmatter 의 description 이 *그 글의 한 줄 요약*
-- [ ] 페이지 metadata 의 title 이 *명사구 + 키워드* (검색·AI 둘 다 친화)
+These aren't part of the JSON-LD scope of this skill but **complement** it. Set up a Google Business Profile if you have any local angle.
 
 ---
 
-## 7. 참고 자료
+## 8. Agentic Future — prepare now
 
-- [Google Search Central — Helpful content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
-- [Schema.org 공식 vocabulary](https://schema.org/docs/full.html)
-- [GEO 학술 논문 (2023) — Aggarwal et al., "GEO: Generative Engine Optimization"](https://arxiv.org/abs/2311.09735)
-- [Anthropic — Claude Web Search docs](https://docs.anthropic.com)
-- [Perplexity Citation API](https://docs.perplexity.ai)
+Google explicitly mentions emerging trends:
+
+> *"AI agents are autonomous systems that can perform tasks. Consider preparing for protocols like Universal Commerce Protocol (UCP) that allow Search agents to do more."*
+
+What this means for you:
+- **Browser agents** (Anthropic Computer Use, OpenAI Operator) may navigate your site programmatically. Semantic HTML and clear button labels matter more than ever.
+- **MCP (Model Context Protocol)** — for SaaS products, exposing data via MCP servers becomes a competitive advantage (your product is then *actionable* by agents).
+- **UCP** — Google is preparing a commerce protocol for AI agents. E-commerce sites should watch for the spec announcement.
+
+This skill ships clean semantic structure as a baseline. Future versions may add MCP/UCP helpers.
+
+---
+
+## 9. Measurement — Did GEO work?
+
+Beyond classic SEO metrics:
+
+| Metric | Where |
+|---|---|
+| AI Overview citation | Manually search target keywords; check if AI Overview cites your domain |
+| Perplexity citation | Search "[your category] [your brand]" on perplexity.ai; check Sources |
+| ChatGPT citation | Same, in ChatGPT Search |
+| Brand direct traffic | GA4 → Acquisition → Direct + Organic Brand growth |
+| Referer from AI tools | GA4 → Acquisition → Referer (some AI tools pass referer) |
+
+Review monthly. AI citation patterns are still evolving — don't expect smooth curves.
+
+---
+
+## 10. Content checklist (GEO-friendly)
+
+For new blog posts or commercial pages:
+
+- [ ] First paragraph contains a one-line answer to the page's core question
+- [ ] H2/H3 headers either ask questions or name clear topics (no vague titles)
+- [ ] At least one specific statistic with date and source
+- [ ] FAQ section (3-6 Q&A pairs) on commercial pages
+- [ ] At least one reputable external citation
+- [ ] Markdown tables or lists where appropriate
+- [ ] Frontmatter `description` summarizes the page in one line
+- [ ] Page metadata `title` is a noun phrase with the core keyword
+- [ ] Semantic HTML (article, section, aside) used appropriately
+- [ ] No "AI-only" rewrites — content is for humans first
+
+---
+
+## 11. References
+
+- **Google AI Optimization Guide (canonical source)** — https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
+- Google Search Central — https://developers.google.com/search
+- Schema.org full vocabulary — https://schema.org/docs/full.html
+- GEO academic paper (2023, Aggarwal et al.) — https://arxiv.org/abs/2311.09735
+- Anthropic Claude Web Search docs — https://docs.anthropic.com
+- Perplexity citation patterns — https://docs.perplexity.ai
+
+---
+
+## TL;DR
+
+1. Write **unique, helpful content** (Google's #1 rule)
+2. Make sure pages are **crawlable** with **semantic HTML**
+3. Add **structured data** (optional but accelerates AI extraction) — use this skill's builders
+4. Verify in **Search Console**, submit **sitemap**
+5. **Don't** create AI-only files or chunk content for AI
+6. Pair with **Google Business Profile** if local angle
+7. Watch for **agentic protocols** (UCP, MCP) as they emerge
+
+The same fundamentals work for SEO and GEO. There is no shortcut.
