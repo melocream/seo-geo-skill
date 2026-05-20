@@ -1,14 +1,14 @@
-# Examples
+# 예시 모음
 
-See `page-schema-examples.tsx` for copy-paste JSON-LD patterns:
+`page-schema-examples.tsx` 에 복사·붙여넣기 JSON-LD 패턴:
 
-1. Service page
-2. Service + OfferCatalog (multi-tier pricing)
-3. ItemList (cases, portfolio, products)
-4. FAQPage (commercial pages)
-5. SoftwareApplication (SaaS products)
-6. Article (blog posts)
-7. Multiple schemas on one page (@graph pattern)
+1. **Service 페이지** (컨설팅·에이전시·SaaS 제품 라인)
+2. **Service + OfferCatalog** (다단계 가격 플랜)
+3. **ItemList** (사례·포트폴리오·상품)
+4. **FAQPage** (커머셜 페이지)
+5. **SoftwareApplication** (SaaS 제품)
+6. **Article** (블로그 포스트)
+7. **하나의 페이지에 여러 스키마** (@graph 패턴)
 
-Each example is a tiny working component you can adapt to your project.
-Pair with the templates in `../templates/` for the foundation (sitemap.ts, robots.ts, layout.tsx).
+각 예시는 본인 프로젝트에 그대로 적용 가능한 작은 컴포넌트.
+`../templates/` 의 기반 (sitemap.ts, robots.ts, layout.tsx) 과 함께 사용하세요.

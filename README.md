@@ -1,74 +1,78 @@
-# SEO + GEO Full Tagging Skill
+# SEO + GEO 풀태깅 스킬
 
-> Production-grade SEO + GEO (Generative Engine Optimization) foundation for Next.js 14+ App Router projects.
+> Next.js 14+ App Router 프로젝트에 **15분 안에** SEO + GEO (Generative Engine Optimization) 인프라를 박아주는 Claude Code 스킬 + 드롭인 템플릿.
 
-A reusable Claude Code skill + drop-in templates that give a new Next.js site a complete search foundation in **under 15 minutes**:
+- Schema.org JSON-LD 빌더 (Organization, Service, SoftwareApplication, FAQPage, Article, ItemList)
+- Sitemap.xml + robots.txt 자동 생성
+- 모든 페이지에 hreflang + canonical URL
+- GEO 패턴 (Answer-first, FAQPage, E-E-A-T) 내장
+- 완전한 `GEO_GUIDE.md` 레퍼런스 문서
 
-- Schema.org JSON-LD builders (Organization, Service, SoftwareApplication, FAQPage, Article, ItemList)
-- Sitemap.xml + robots.txt auto-generated
-- hreflang + canonical URLs across pages
-- GEO patterns (Answer-first, FAQPage, E-E-A-T) baked in
-- Complete `GEO_GUIDE.md` reference doc
+실제 운영 사이트 [Hypemarc Website](https://www.hypemarc.com) 에서 검증한 패턴을 그대로 추출했습니다.
 
-Extracted from production use at [Hypemarc Website](https://www.hypemarc.com).
+🇺🇸 English version: [README_EN.md](./README_EN.md)
 
 ---
 
-## What's Inside
+## 무엇이 들어있나
 
 ```
 seo-geo-skill/
-├── README.md                                ← You are here
-├── SKILL.md                                 ← Claude Code skill definition
+├── README.md                                ← 지금 보고 계신 파일
+├── README_EN.md                             ← 영어 버전
+├── SKILL.md                                 ← Claude Code 스킬 정의
 ├── templates/
 │   ├── lib/
-│   │   ├── schema.ts                        ← Reusable Schema.org builders
-│   │   └── faq-schema.ts                    ← FAQPage helper
+│   │   ├── schema.ts                        ← 재사용 Schema.org 빌더
+│   │   └── faq-schema.ts                    ← FAQPage 헬퍼
 │   ├── app/
-│   │   ├── sitemap.ts                       ← Dynamic sitemap with hreflang
-│   │   ├── robots.ts                        ← Allow + sitemap reference
+│   │   ├── sitemap.ts                       ← 동적 사이트맵 (hreflang 포함)
+│   │   ├── robots.ts                        ← Allow + 사이트맵 참조
 │   │   └── [locale]/
 │   │       └── layout.tsx.example           ← Org + WebSite + ContactPoint + Address JSON-LD
 │   └── docs/
-│       └── GEO_GUIDE.md                     ← Strategy + measurement guide
+│       └── GEO_GUIDE.md                     ← 전략·측정 가이드
 ├── examples/
 │   ├── README.md
-│   └── page-schema-examples.tsx             ← Service, FAQ, ItemList per-page patterns
+│   └── page-schema-examples.tsx             ← 페이지별 Service/FAQ/ItemList 패턴
 └── LICENSE                                  ← MIT
 ```
 
 ---
 
-## Why use this
+## 왜 이 스킬을 쓰나
 
-| Without this skill | With this skill |
+| 스킬 없이 | 스킬 사용 시 |
 |---|---|
-| Hand-write `<meta>` tags per page | Type-safe Metadata API + reusable Schema.org builders |
-| Forget hreflang or canonical | Built into layout + per-page Metadata |
-| Confused about which schema to use | `lib/schema.ts` has Service, ItemList, SoftwareApplication, FAQPage builders ready |
-| AI answer engines (Perplexity, ChatGPT, Google AI Overview) can't extract your content | FAQPage + Answer-first patterns + E-E-A-T signals baked in |
-| sitemap.xml missing pages or wrong domain | Centralized sitemap.ts reads pages array + blog posts dynamically |
+| `<meta>` 태그를 페이지마다 직접 작성 | 타입 안전 Metadata API + 재사용 Schema.org 빌더 |
+| hreflang, canonical 빠뜨림 | layout + 페이지별 Metadata 에 자동 포함 |
+| 어떤 schema 를 써야 할지 헷갈림 | `lib/schema.ts` 에 Service, ItemList, SoftwareApplication, FAQPage 빌더 준비됨 |
+| AI 답변 엔진 (Perplexity, ChatGPT, Google AI Overview) 이 콘텐츠 추출 불가 | FAQPage + Answer-first 패턴 + E-E-A-T 신호 기본 내장 |
+| sitemap.xml 누락·잘못된 도메인 | 페이지 배열 + 블로그 글 동적 스캔 |
 
 ---
 
-## Why "SEO + GEO"?
+## 왜 "SEO + GEO" 인가?
 
-**SEO** = Search Engine Optimization (Google·Bing·Naver classic ranking)
-**GEO** = Generative Engine Optimization (Google AI Overview·Perplexity·ChatGPT·Claude answer-engine citations)
+**SEO** = Search Engine Optimization (Google·Bing·Naver 전통 검색 순위)
+**GEO** = Generative Engine Optimization (Google AI Overview·Perplexity·ChatGPT·Claude 답변 엔진 인용)
 
-Both share the same foundation (schema.org, hreflang, structured content), but GEO emphasizes:
-1. **Answer-first** content structure (key answer in first paragraph)
-2. **FAQPage schema** for direct extraction by AI
-3. **Citable statistics** (specific numbers + sources)
-4. **E-E-A-T signals** (author, date, organization)
+두 영역은 같은 기반 (schema.org, hreflang, 구조화된 콘텐츠) 을 공유하지만, GEO 는 다음을 강조:
 
-This skill ships templates that satisfy both. See `templates/docs/GEO_GUIDE.md` for the strategy.
+1. **Answer-first** 콘텐츠 구조 — 첫 문단에 핵심 답변
+2. **FAQPage 스키마** — AI 가 직접 추출
+3. **인용 가능한 통계** — 구체적 숫자 + 출처
+4. **E-E-A-T 신호** — 저자, 날짜, 조직
+
+이 스킬은 두 가지 모두 만족하는 템플릿을 제공합니다. 전략은 `templates/docs/GEO_GUIDE.md` 에 정리됨.
+
+> **Google 공식 가이드 100% 정렬** — 본 스킬의 모든 권장사항은 [Google AI Optimization Guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide) 의 8가지 권장사항과 정확히 일치합니다. *"하지 말 것"* 5가지도 포함.
 
 ---
 
-## Quick Start (manual)
+## 빠른 시작 (수동 설치)
 
-### 1. Copy templates
+### 1. 템플릿 복사
 
 ```bash
 cp templates/lib/schema.ts                   your-project/lib/schema.ts
@@ -78,20 +82,20 @@ cp templates/app/robots.ts                   your-project/app/robots.ts
 cp templates/docs/GEO_GUIDE.md               your-project/docs/GEO_GUIDE.md
 ```
 
-### 2. Add to root layout JSON-LD
+### 2. 루트 레이아웃에 JSON-LD 추가
 
-Open `templates/app/[locale]/layout.tsx.example` and merge the Organization + WebSite JSON-LD into your existing layout (replace `Hypemarc` and address details with yours).
+`templates/app/[locale]/layout.tsx.example` 을 참고하여 기존 레이아웃에 Organization + WebSite JSON-LD 를 병합 (Hypemarc 자리에 본인 회사명, 주소 정보 교체).
 
-### 3. Customize sitemap.ts
+### 3. sitemap.ts 커스터마이징
 
-Edit the `pages` array in `app/sitemap.ts`:
+`app/sitemap.ts` 의 `pages` 배열 수정:
 ```ts
 const pages = ['', '/about', '/products', '/contact'];
 ```
 
-### 4. Add per-page schemas (optional but recommended)
+### 4. 페이지별 스키마 추가 (선택, 권장)
 
-Use `lib/schema.ts` builders in any page:
+`lib/schema.ts` 빌더를 어떤 페이지에서든 사용:
 
 ```tsx
 // app/products/page.tsx
@@ -117,94 +121,107 @@ export default async function ProductsPage() {
 }
 ```
 
-### 5. Set `NEXT_PUBLIC_SITE_URL`
+### 5. `NEXT_PUBLIC_SITE_URL` 설정
 
 ```bash
 # .env.local
 NEXT_PUBLIC_SITE_URL=https://www.yoursite.com
 ```
 
-### 6. Done
+### 6. 끝
 
-Submit `sitemap.xml` to Google Search Console + Naver Search Advisor. AI answer engines (Perplexity, ChatGPT) start picking up structured content within 1-2 weeks.
+`sitemap.xml` 을 Google Search Console + Naver Search Advisor 에 제출. AI 답변 엔진(Perplexity, ChatGPT)은 1-2주 안에 구조화 콘텐츠를 잡기 시작합니다.
 
 ---
 
-## Quick Start (Claude Code skill)
+## Claude Code 스킬로 사용하기
 
 ```
 You: /seo-geo-full
-Claude: I'll set up SEO + GEO foundation for your Next.js project.
-        - Company name?
-        - Primary domain?
-        - Office address (or "service-area business")?
-You: Hypemarc / https://www.hypemarc.com / Seoul Songpa-gu
-Claude: [generates schema.ts, sitemap.ts, robots.ts, layout JSON-LD, GEO_GUIDE.md]
-       Done. NEXT_PUBLIC_SITE_URL added to .env.example.
+Claude: Next.js 프로젝트에 SEO + GEO 기반을 설치하겠습니다.
+        - 회사명?
+        - 대표 도메인?
+        - 사무실 주소 (또는 "서비스 지역 비즈니스")?
+You: Hypemarc / https://www.hypemarc.com / 서울 송파구
+Claude: [schema.ts, sitemap.ts, robots.ts, layout JSON-LD, GEO_GUIDE.md 자동 생성]
+       완료. .env.example 에 NEXT_PUBLIC_SITE_URL 추가됨.
 ```
 
 ---
 
-## Schema Builders (out of the box)
+## 기본 제공 스키마 빌더
 
-| Builder | Use case |
+| 빌더 | 사용처 |
 |---|---|
-| `buildServiceSchema({ path, name, description, ... })` | Any service-offering page |
-| `buildItemListSchema({ path, name, items, mapItem })` | List pages (cases, portfolio, products) |
-| `generateFAQSchema([{ question, answer }, ...])` | FAQ sections — direct AI answer extraction |
+| `buildServiceSchema({ path, name, description, ... })` | 서비스 제공 페이지 |
+| `buildItemListSchema({ path, name, items, mapItem })` | 목록 페이지 (사례, 포트폴리오, 상품) |
+| `generateFAQSchema([{ question, answer }, ...])` | FAQ 섹션 — AI 답변 직접 추출 |
 
-Plus copy-paste examples in `templates/app/[locale]/layout.tsx.example`:
+추가로 `templates/app/[locale]/layout.tsx.example` 에 복사용 예시:
 - **Organization** + ContactPoint + PostalAddress
 - **WebSite**
-- **SoftwareApplication** (for SaaS products)
-- **Article** (for blog posts)
+- **SoftwareApplication** (SaaS 제품용)
+- **Article** (블로그 포스트용)
 
 ---
 
-## GEO Patterns (5 principles built in)
+## GEO 5원칙 (기본 내장)
 
-1. **Answer-first** — Each page/blog opens with the key answer in 1-2 sentences (see `GEO_GUIDE.md`)
-2. **Schema.org JSON-LD** — Every page has structured data
-3. **Citable statistics** — Specific numbers + sources (templates show how to mark them)
-4. **E-E-A-T signals** — Author, date, organization on every blog post
-5. **FAQPage** — Recommended on every commercial page (Service, Product, Pricing)
+1. **Answer-first** — 모든 페이지·블로그 첫 1-2문장에 핵심 답변 (`GEO_GUIDE.md` 참조)
+2. **Schema.org JSON-LD** — 모든 페이지에 구조화 데이터
+3. **인용 가능한 통계** — 구체적 숫자 + 출처 (템플릿이 표기 방법 제시)
+4. **E-E-A-T 신호** — 블로그마다 저자·날짜·조직 명시
+5. **FAQPage** — 모든 커머셜 페이지(Service, Product, Pricing) 에 권장
 
-See `templates/docs/GEO_GUIDE.md` for the full strategy + measurement guide.
+전략 + 측정 가이드는 `templates/docs/GEO_GUIDE.md` 에서.
 
 ---
 
-## Safety / defaults
+## ❌ Google이 *하지 말라* 고 한 5가지 (가이드에 포함됨)
 
-| Scenario | Behavior |
+| 하지 말 것 | 이유 |
 |---|---|
-| `NEXT_PUBLIC_SITE_URL` empty | Falls back to `https://www.example.com` placeholder (you'll see it in source — easy to spot) |
-| Page metadata missing | Inherits from root layout (`title.template` and `description`) |
-| Schema validation | Use [Google Rich Results Test](https://search.google.com/test/rich-results) to validate after deploy |
+| **LLMs.txt 같은 "AI 전용" 파일 만들지 말 것** | Google: *"no special files for AI."* AI 시스템이 안 읽음 |
+| **콘텐츠를 잘게 자르지 말 것** | Google: *"AI 위해 콘텐츠 잘게 자를 필요 없음."* 자연스럽게 작성 |
+| **AI 전용으로 콘텐츠 다시 쓰지 말 것** | Google: *"AI 시스템 위해서 콘텐츠 다시 쓰지 말 것."* 사람용 한 페이지가 둘 다 충족 |
+| **가짜 mention 만들지 말 것** | 인위적 백링크·mention 은 스팸으로 잡힘. 진짜 가치로 진짜 mention |
+| **Long-tail 변형 과집중** | AI 가 동의어·의도 이해. 좋은 한 페이지 ≫ 비슷한 열 페이지 |
 
 ---
 
-## What's NOT included (intentional scope)
+## 안전 / 기본값
 
-- ❌ Open Graph image generation — bring your own `og-default.png`
-- ❌ Blog content management — separate concern (MDX templates available in other skills)
-- ❌ Google Search Console / Naver Search Advisor account setup — manual one-time steps documented in `GEO_GUIDE.md`
-- ❌ Bing Webmaster Tools — add manually if needed
-
----
-
-## Versioning
-
-- **v1.0** (2026-05) — Initial extraction from Hypemarc Website
-- Built for: Next.js 14+ (App Router) + TypeScript
+| 시나리오 | 동작 |
+|---|---|
+| `NEXT_PUBLIC_SITE_URL` 비어있음 | `https://www.example.com` placeholder 로 폴백 (소스에서 즉시 발견 가능) |
+| 페이지 metadata 누락 | 루트 layout 의 `title.template` 과 `description` 상속 |
+| Schema 검증 | 배포 후 [Google Rich Results Test](https://search.google.com/test/rich-results) 로 검증 |
 
 ---
 
-## Related Skills
+## 의도적으로 *포함 안 함* (스코프 명확)
 
-- **GA4 Full Tagging Skill** — pair this with [ga4-full-tagging-skill](https://github.com/melocream/ga4-full-tagging-skill) for complete analytics + search foundation.
+- ❌ Open Graph 이미지 생성 — 본인 `og-default.png` 직접 제공
+- ❌ 블로그 콘텐츠 관리 — 별도 영역 (다른 스킬에 MDX 템플릿 있음)
+- ❌ Google Search Console / Naver Search Advisor 계정 셋업 — 수동 1회 작업, `GEO_GUIDE.md` 에 문서화
+- ❌ Bing Webmaster Tools — 필요 시 수동 추가
 
 ---
 
-## License
+## 버전 정보
 
-MIT. Use freely in commercial and personal projects.
+- **v1.0** (2026-05) — Hypemarc Website 에서 첫 추출
+- **v1.1** (2026-05) — Google AI Optimization Guide 와 정렬 (8개 갭 보강)
+- 대상: Next.js 14+ (App Router) + TypeScript
+
+---
+
+## 관련 스킬
+
+- **GA4 풀태깅 스킬** — [ga4-full-tagging-skill](https://github.com/melocream/ga4-full-tagging-skill) 과 함께 쓰면 *분석 + 검색* 완전한 기반 구성.
+
+---
+
+## 라이선스
+
+MIT. 상업·개인 프로젝트 모두 자유롭게 사용 가능.
